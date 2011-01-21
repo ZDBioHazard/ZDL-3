@@ -1,0 +1,122 @@
+/**********************************************************************
+* ZDL!
+* Copyright (C) 2005 BioHazard / Vectec Software
+***********************************************************************
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 3 or any later version.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+***********************************************************************
+* zdl-log.txt : Documentation of changes
+**********************************************************************/
+
+*-- Stuff left to do --*
+	* DMFlag Calculator
+	* ZDLNet branch
+
+*-- Known Bugs --*
+	* None that I know of but I'm sure there are a few.
+
+/////////////////////////////////////////////////////////////
+
+!-- Version 3.0d --!
+	*-- Dec 10th 2005 --*
+		* Fixed : Entering a port of IWAD path without a '\\' would
+			crash ZDL.
+		* Fixed : The current directory should be set to the selected
+			port's dir so the proper files are loaded.
+
+!-- Version 3.0c --!
+	*-- Dec 2nd 2005 --*
+		* Fixed : ReadINI() Didn't close the file and free memory if it
+			failed for some reason.
+		* Fixed : If you tried to load a config file with no ports or
+			IWADs ZDL would crash.
+
+!-- Version 3.0b --!
+	*-- Dec 2nd 2005 --*
+		* Fixed : ZDL is supposed to exit if you have cfg.launch set
+			and a save file can't be loaded for some reason.
+		* Fixed : The main dialog always populated the warp list with
+			the first file's maps even if it's unavailable.
+		* Fixed : Cfg_ReadSave() Didn't populate the save list when a
+			new IWAD is set. -- Thanks Belial
+
+!-- Version 3.0a --!
+	*-- Dec 2nd 2005 --*
+		* Fixed : Dlg_Launch() Didn't put spaces around the EXE or IWAD
+			names, this would make the ZDoom IWAD dialog pop up.
+		* Fixed : Cfg_GetSel() Always checked for port[i] instead of
+			item[i] resulting in IWADs after the last port to always
+			crash ZDL -- Thanks Belial
+
+!-- Version 3.0 --!
+	*-- Dec 2nd 2005 --*
+		* Total Recode: Undocumented
+
+!-- Version 2.0 --!
+	*-- Jul 15th 2005 --*
+		* Total Recode: Undocumented
+
+!-- Version 1.5 --!
+	*-- Mar 12th 2005 --*
+		* Undocumented
+
+!-- Version 1.4 --!
+	*-- Date Unknown --*
+		* File handling code overhaul, it loads things much more
+			solidly now
+		* Added a warp box to select the level to start on
+		* Added a skill box to set the starting skill
+		* "Instant Action" option removed form dialog, config and
+			langfile
+		* "EnjayMode" became the base for the main dialog
+		* Cmd line flag "/D" removed. added to config
+		* New config option "PrmtOnLnch": prompts the user much like
+			"/D" did in previous versions
+		* New save format, now properly saves IWAD
+		* "EnjayMode" removed due to the new layout
+
+!-- Version 1.3b --!
+	*-- Date Unknown --*
+		* Removed some debugging code that got out into the release
+			version! :oops:
+		* Made the pwads list remove the directory info again
+		* Added an option to show the directory in the PWADS list
+
+!-- Version 1.31 --!
+	*-- Date Unknown --*
+		* Fixed the clipboard function
+
+!-- Version 1.3 --!
+	*-- Date Unknown --*
+		* Fixed a bug that would make ZDL generate a malformed command
+			when lots of PWADS are loaded
+		* Added a button to generate the command line and send it to
+			the clipboard
+
+!-- Version 1.2 --!
+	*-- Date Unknown --*
+		* Custom Configurations
+		* Custom IWADS
+		* new config options: ExtendPanels, EnjayMode, CloseOnExit
+
+!-- Version 1.1 --!
+	*-- Date Unknown --*
+		* Added a multiplayer panel thingy
+
+!-- Version 1.0 --!
+	*-- Date Unknown --*
+		* PWAD/DEH loading
+		* Config File
+
+!-- Version 0.2 --!
+	*-- Date Unknown --*
+		* Iwad selection
+
+!-- Version 0.1 --!
+	*-- Date Unknown --*
+		* Initial release
