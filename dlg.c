@@ -19,6 +19,7 @@
 void Dlg_Launch(HWND dlg,char prompt){
 	int i=0,q=MAX_PATH*3,pw=0,pt=0;
 	char *cmd=0,*tmp=0;
+	char *portExe;
 	// Make sure there is a port selected
 	if(!SendMessage(GetDlgItem(dlg,LST_PORT),CB_GETCOUNT,0,0)||!SendMessage(GetDlgItem(dlg,LST_IWAD),LB_GETCOUNT,0,0)){MessageBox(dlg,STR_NOITEMS,"Error!",MB_OK|MB_ICONEXCLAMATION);return;}
 	// Determine how long the cmd string has to be
@@ -27,7 +28,8 @@ void Dlg_Launch(HWND dlg,char prompt){
 	memset((tmp=malloc(MAX_PATH*sizeof(char))),0,MAX_PATH*sizeof(char));
 	memset((cmd=malloc(q*sizeof(char))),0,q*sizeof(char));
 	// Print the basic stuff
-	_snprintf(cmd,q,"\"%s\" -iwad \"%s\"%s%s",port[Cfg_GetSel(SendMessage(GetDlgItem(dlg,LST_PORT),CB_GETCURSEL,0,0),port)]->path,iwad[Cfg_GetSel(SendMessage(GetDlgItem(dlg,LST_IWAD),LB_GETCURSEL,0,0),iwad)]->path,(strlen(cfg.always))?(" "):(""),cfg.always);
+	portExe = port[Cfg_GetSel(SendMessage(GetDlgItem(dlg,LST_PORT),CB_GETCURSEL,0,0),port)]->path;
+	_snprintf(cmd,q,"\"%s\" -iwad \"%s\"%s%s",portExe,iwad[Cfg_GetSel(SendMessage(GetDlgItem(dlg,LST_IWAD),LB_GETCURSEL,0,0),iwad)]->path,(strlen(cfg.always))?(" "):(""),cfg.always);
 	// Warp and Skill
 	SendMessage(GetDlgItem(dlg,LST_WARP),WM_GETTEXT,MAX_PATH,(LPARAM)tmp);
 	if(stricmp(tmp,"")){
@@ -91,8 +93,8 @@ void Dlg_Launch(HWND dlg,char prompt){
 	}
 	if(prompt&&MessageBox(dlg,cmd,"Run this command-line?",MB_YESNO|MB_DEFBUTTON2|MB_ICONQUESTION)==IDNO){goto exit;}
 	// Change to the port directory
-	if(strrchr(tmp,'\\')){
-		strncpy(tmp,port[Cfg_GetSel(SendMessage(GetDlgItem(dlg,LST_PORT),CB_GETCURSEL,0,0),port)]->path,MAX_PATH);
+	if(strrchr(portExe,'\\')){
+		strncpy(tmp,portExe,MAX_PATH);
 		strrchr(tmp,'\\')[0]='\0';
 		chdir(tmp);
 	}
@@ -106,7 +108,7 @@ exit:
 	free(cmd);free(tmp);
 }
 
- /////////////////////////////////////////////////
+/////////////////////////////////////////////////
 // Dlg_AddPWAD : Adds an item to the PWAD list
 int Dlg_AddPWAD(HWND dlg,char *file){
 	int i=SendMessage(GetDlgItem(dlg,LST_PWAD),LB_GETCOUNT,0,0);

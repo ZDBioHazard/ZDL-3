@@ -22,6 +22,15 @@
 
 /////////////////////////////////////////////////////////////
 
+!-- Version 3.1a (Changes by Wildgoose) --!
+	*-- 2009-03-16 --*
+		* Fixed : Properly switch to source port exe directory before launch.
+		          This will use the .ini from the source port directory
+		          instead of creating new ones in zdl directory.
+		* Added : Bundled msvcr80.dll and manifest file. Therefore no longer
+		          requires the user to install "Microsoft Visual C++ 2005
+		          Redistributable Package (x86)"
+
 !-- Version 3.1 (Changes by Risen) --!
 	*-- Nov 20th 2007 --*
 		* Added : Default file filter now includes PK3

@@ -24,7 +24,7 @@ BMP_LOGO BITMAP DISCARDABLE "res\bmp_logo.bmp"
 
 DLG_MAIN DIALOG DISCARDABLE 0,0,180,172
 STYLE DS_CENTER|WS_MINIMIZEBOX|WS_POPUP|WS_CAPTION|WS_SYSMENU
-CAPTION "ZDL 3.1"
+CAPTION "ZDL 3.1a"
 FONT 8,"MS Sans Serif"
 BEGIN
 	LTEXT "External Files",IDC_STATIC,0,0,88,8
@@ -122,7 +122,7 @@ FONT 8,"MS Sans Serif"
 BEGIN
 	DEFPUSHBUTTON "OK",BTN_OK,132,48,36,12
 	CONTROL BMP_LOGO,IDC_STATIC,"Static",SS_BITMAP,0,0,68,33,WS_EX_DLGMODALFRAME
-	LTEXT "ZDL V3.1\nCopyright (c) 2005 BioHazard\nhttp://biohazard.drdteam.org/",IDC_STATIC,72,4,96,24
+	LTEXT "ZDL V3.1a\nCopyright (c) 2005 BioHazard\nhttp://biohazard.drdteam.org/",IDC_STATIC,72,4,96,24
 	LTEXT "Greetz to Risen, Enjay, DRDTeam.org, ZDoom.org, #DoomArmory + #DMClub!\nYou guys rock! Enjoy this!              -Bio",IDC_STATIC,4,36,124,24
 
 	LTEXT "Updates and bugfixes by Risen: 2007-11-20",IDC_STATIC,4,68,168,8
@@ -141,6 +141,6 @@ MNU_MENU MENU DISCARDABLE BEGIN
 		MENUITEM "Save Config...",MNU_SAVE
 		MENUITEM SEPARATOR
 		MENUITEM "Options",MNU_OPTIONS
-		MENUITEM "About",MNU_ABOUT
+		MENUITEM "About",MNU_ABOUT				
 	END
 END
