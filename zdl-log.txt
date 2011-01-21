@@ -1,6 +1,7 @@
 /**********************************************************************
 * ZDL!
 * Copyright (C) 2005 BioHazard / Vectec Software
+* Additional changes by Risen
 ***********************************************************************
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -15,12 +16,23 @@
 
 *-- Stuff left to do --*
 	* DMFlag Calculator
-	* ZDLNet branch
 
 *-- Known Bugs --*
-	* None that I know of but I'm sure there are a few.
+	* None
 
 /////////////////////////////////////////////////////////////
+
+!-- Version 3.1 (Changes by Risen) --!
+	*-- Nov 20th 2007 --*
+		* Added : Default file filter now includes PK3
+		* Added : Keyboard support
+		* Added : Option to close on launch
+		* Added : Option to associate PK3
+		* Added : Option to associate ZIP (if you really want to...)
+		* Fixed : If something other than the first IWAD in the list
+			was selected on close, PWADs would be dropped from the
+			list on startup.
+		* Fixed : Could not start on a map named "NONE"
 
 !-- Version 3.0d --!
 	*-- Dec 10th 2005 --*

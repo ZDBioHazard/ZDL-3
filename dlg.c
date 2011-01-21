@@ -30,7 +30,7 @@ void Dlg_Launch(HWND dlg,char prompt){
 	_snprintf(cmd,q,"\"%s\" -iwad \"%s\"%s%s",port[Cfg_GetSel(SendMessage(GetDlgItem(dlg,LST_PORT),CB_GETCURSEL,0,0),port)]->path,iwad[Cfg_GetSel(SendMessage(GetDlgItem(dlg,LST_IWAD),LB_GETCURSEL,0,0),iwad)]->path,(strlen(cfg.always))?(" "):(""),cfg.always);
 	// Warp and Skill
 	SendMessage(GetDlgItem(dlg,LST_WARP),WM_GETTEXT,MAX_PATH,(LPARAM)tmp);
-	if(stricmp(tmp,"NONE")){
+	if(stricmp(tmp,"")){
 		strncat(cmd," +map ",q-strlen(cmd));
 		strncat(cmd,tmp,q-strlen(cmd));
 		_snprintf(&cmd[strlen(cmd)],q-strlen(cmd)," -skill %d",SendMessage(GetDlgItem(dlg,LST_SKILL),CB_GETCURSEL,0,0)+1);
@@ -98,6 +98,10 @@ void Dlg_Launch(HWND dlg,char prompt){
 	}
 	// GoooOOooooOOOOOoooOOO!
 	WinExec(cmd,SW_NORMAL);
+	// Quit on launch?
+	if(cfg.autoclose){
+		Dlg_Quit(dlg,1);
+	}
 exit:
 	free(cmd);free(tmp);
 }
@@ -127,7 +131,7 @@ void Dlg_ClearAll(HWND dlg){
 	int box[2][5]={{LST_PORT,LST_GAME,LST_PLAYERS},{EDT_EXTRA,EDT_HOST,EDT_FRAGS,EDT_DMF,EDT_DMF2}};
 	Dlg_ClearPWAD(dlg);
 	SendMessage(GetDlgItem(dlg,LST_IWAD),LB_SETCURSEL,0,0);
-	SendMessage(GetDlgItem(dlg,LST_WARP),WM_SETTEXT,0,(LPARAM)"NONE");
+	SendMessage(GetDlgItem(dlg,LST_WARP),WM_SETTEXT,0,(LPARAM)"");
 	SendMessage(GetDlgItem(dlg,LST_SKILL),CB_SETCURSEL,2,0);
 	for(i=0;i<3;i++){SendMessage(GetDlgItem(dlg,box[0][i]),CB_SETCURSEL,0,0);}
 	for(i=0;i<5;i++){SendMessage(GetDlgItem(dlg,box[1][i]),WM_SETTEXT,0,(LPARAM)"");}
@@ -145,10 +149,11 @@ void Dlg_Quit(HWND dlg,char save){
 			EndDialog(dlg,0);return;
 		}
 		if(!(fptr=fopen(cfg.ini,"w"))){MessageBox(HWND_DESKTOP,"The INI file could not be opened for writing!\nYour settings have not been saved!","Error!",MB_OK|MB_ICONHAND);return;}
-		if(cfg.always[0]||cfg.launch){
+		if(cfg.always[0]||cfg.launch||cfg.autoclose){
 			fputs("[zdl.general]\n",fptr);
 			if(cfg.always[0]){fprintf(fptr,"alwaysadd=%s\n",cfg.always);}
 			if(cfg.launch){fputs("zdllaunch=1\n",fptr);}
+			if(cfg.autoclose){fputs("autoclose=1\n",fptr);}
 		}
 		if(port[0]){ // Write ports
 			fprintf(fptr,"[zdl.ports]\n");
@@ -177,7 +182,7 @@ void Dlg_PopulateWarp(HWND dlg,char *file){
 	LUMPHEAD lump[2];
 	FILE *fptr=0;
 	SendMessage(GetDlgItem(dlg,LST_WARP),CB_RESETCONTENT,0,0);
-	SendMessage(GetDlgItem(dlg,LST_WARP),CB_ADDSTRING,0,(LPARAM)"NONE");
+	SendMessage(GetDlgItem(dlg,LST_WARP),CB_ADDSTRING,0,(LPARAM)"");
 	if((fptr=fopen(file,"rb"))){
 		fread(&header,1,sizeof(WADHEAD),fptr);
 		fseek(fptr,header.dir,SEEK_SET);

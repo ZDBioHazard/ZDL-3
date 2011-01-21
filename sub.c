@@ -10,7 +10,7 @@
 * WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ***********************************************************************
-* zdl.c : Window Procedures for minor dialogs
+* sub.c : Window Procedures for minor dialogs
 **********************************************************************/
 #include "zdl.h"
 
@@ -23,6 +23,8 @@ LRESULT CALLBACK AssocProc(HWND dlg,UINT msg,WPARAM wp,LPARAM lp){
 		case WM_INITDIALOG:
 			if(RegQueryValue(HKEY_CLASSES_ROOT,"ZDL.SaveFile",tmp,&sz)==ERROR_SUCCESS&&tmp[0]){SendMessage(GetDlgItem(dlg,CHK_ZDL),BM_SETCHECK,1,0);cfg.assoc[0]=1;}sz=MAX_PATH;
 			if(RegQueryValue(HKEY_CLASSES_ROOT,"ZDL.WADFile",tmp,&sz)==ERROR_SUCCESS&&tmp[0]){SendMessage(GetDlgItem(dlg,CHK_WAD),BM_SETCHECK,1,0);cfg.assoc[1]=1;}sz=MAX_PATH;
+			if(RegQueryValue(HKEY_CLASSES_ROOT,"ZDL.PK3File",tmp,&sz)==ERROR_SUCCESS&&tmp[0]){SendMessage(GetDlgItem(dlg,CHK_PK3),BM_SETCHECK,1,0);cfg.assoc[3]=1;}sz=MAX_PATH;
+			if(RegQueryValue(HKEY_CLASSES_ROOT,"ZDL.ZipFile",tmp,&sz)==ERROR_SUCCESS&&tmp[0]){SendMessage(GetDlgItem(dlg,CHK_ZIP),BM_SETCHECK,1,0);cfg.assoc[4]=1;}sz=MAX_PATH;
 			if(RegQueryValue(HKEY_CLASSES_ROOT,"ZDL.PatchFile",tmp,&sz)==ERROR_SUCCESS&&tmp[0]){SendMessage(GetDlgItem(dlg,CHK_DEH),BM_SETCHECK,1,0);cfg.assoc[2]=1;}
 		break;
 		case WM_COMMAND:switch(HIWORD(wp)){
@@ -39,6 +41,18 @@ LRESULT CALLBACK AssocProc(HWND dlg,UINT msg,WPARAM wp,LPARAM lp){
 				}}else{if(cfg.assoc[1]){ // Delete keys
 					RegDeleteKey(HKEY_CLASSES_ROOT,".wad");
 					SHDeleteKey(HKEY_CLASSES_ROOT,"ZDL.WADFile");
+				}}
+				if(SendMessage(GetDlgItem(dlg,CHK_PK3),BM_GETCHECK,0,0)){if(!cfg.assoc[3]){ // Set the value
+					RegisterFileType(".pk3","ZDL.PK3File","Doom Engine Data File",_pgmptr,"\"%1\"",2);
+				}}else{if(cfg.assoc[3]){ // Delete keys
+					RegDeleteKey(HKEY_CLASSES_ROOT,".pk3");
+					SHDeleteKey(HKEY_CLASSES_ROOT,"ZDL.PK3File");
+				}}
+				if(SendMessage(GetDlgItem(dlg,CHK_ZIP),BM_GETCHECK,0,0)){if(!cfg.assoc[4]){ // Set the value
+					RegisterFileType(".zip","ZDL.ZipFile","Doom Engine Data File",_pgmptr,"\"%1\"",2);
+				}}else{if(cfg.assoc[4]){ // Delete keys
+					RegDeleteKey(HKEY_CLASSES_ROOT,".zip");
+					SHDeleteKey(HKEY_CLASSES_ROOT,"ZDL.ZipFile");
 				}}
 				if(SendMessage(GetDlgItem(dlg,CHK_DEH),BM_GETCHECK,0,0)){if(!cfg.assoc[2]){ // Set the value
 					RegisterFileType(".deh","ZDL.PatchFile","DeHackEd Patch",_pgmptr,"\"%1\"",3);

@@ -39,6 +39,7 @@ LRESULT CALLBACK ConfigProc(HWND dlg,UINT msg,WPARAM wp,LPARAM lp){
 		// Fill the dialog with info
 			SendMessage(GetDlgItem(dlg,EDT_EXTRA),WM_SETTEXT,0,(LPARAM)cfg.always);
 			SendMessage(GetDlgItem(dlg,CHK_LAUNCH),BM_SETCHECK,cfg.launch,0);
+			SendMessage(GetDlgItem(dlg,CHK_AUTOCLOSE),BM_SETCHECK,cfg.autoclose,0);
 			// Port and IWAD lists
 			for(i=0;port[i]&&i<MAX_ITEM;i++){SendMessage(GetDlgItem(dlg,LST_PORT),LB_ADDSTRING,0,(LPARAM)port[i]->name);}
 			for(i=0;iwad[i]&&i<MAX_ITEM;i++){SendMessage(GetDlgItem(dlg,LST_IWAD),LB_ADDSTRING,0,(LPARAM)iwad[i]->name);}
@@ -109,6 +110,7 @@ LRESULT CALLBACK ConfigProc(HWND dlg,UINT msg,WPARAM wp,LPARAM lp){
 				case BTN_OK:
 					SendMessage(GetDlgItem(dlg,EDT_EXTRA),WM_GETTEXT,sizeof(cfg.always),(LPARAM)cfg.always);
 					cfg.launch=(char)SendMessage(GetDlgItem(dlg,CHK_LAUNCH),BM_GETCHECK,0,0);
+					cfg.autoclose=(char)SendMessage(GetDlgItem(dlg,CHK_AUTOCLOSE),BM_GETCHECK,0,0);
 					EndDialog(dlg,0);
 				break;
 			}break;
@@ -215,7 +217,7 @@ LRESULT CALLBACK MainProc(HWND dlg,UINT msg,WPARAM wp,LPARAM lp){
 						}
 					}else{if(GetOpenFileName(&ofn)){Cfg_ReadSave(dlg,ofn.lpstrFile);}}
 					free(ofn.lpstrFile);
-				break;
+					break;
 				case MNU_CLEAR:Dlg_ClearAll(dlg);break;
 				case MNU_PWAD:Dlg_ClearPWAD(dlg);break;
 				// Open and close the multiplay panel
@@ -225,9 +227,24 @@ LRESULT CALLBACK MainProc(HWND dlg,UINT msg,WPARAM wp,LPARAM lp){
 					AdjustWindowRect(&rct,WS_POPUP|WS_CAPTION,0);
 					SetWindowPos(dlg,0,0,0,rct.right-rct.left,rct.bottom-rct.top,SWP_NOMOVE|SWP_NOZORDER);
 					SendMessage(GetDlgItem(dlg,BTN_PANEL),BM_SETIMAGE,IMAGE_ICON,(LPARAM)LoadIcon(GetModuleHandle(NULL),MAKEINTRESOURCE((cfg.dlgmode)?(ICO_DOWN):(ICO_UP))));
-				break;
+					if (cfg.dlgmode) {
+						EnableWindow(GetDlgItem(dlg,LST_GAME), FALSE);
+						EnableWindow(GetDlgItem(dlg,EDT_HOST), FALSE);
+						EnableWindow(GetDlgItem(dlg,LST_PLAYERS), FALSE);
+						EnableWindow(GetDlgItem(dlg,EDT_FRAGS), FALSE);
+						EnableWindow(GetDlgItem(dlg,EDT_DMF), FALSE);
+						EnableWindow(GetDlgItem(dlg,EDT_DMF2), FALSE);
+					} else {
+						EnableWindow(GetDlgItem(dlg,LST_GAME), TRUE);
+						EnableWindow(GetDlgItem(dlg,EDT_HOST), TRUE);
+						EnableWindow(GetDlgItem(dlg,LST_PLAYERS), TRUE);
+						EnableWindow(GetDlgItem(dlg,EDT_FRAGS), TRUE);
+						EnableWindow(GetDlgItem(dlg,EDT_DMF), TRUE);
+						EnableWindow(GetDlgItem(dlg,EDT_DMF2), TRUE);
+					}
+					break;
 				case BTN_ADD:if(pwad[MAX_PWAD-1]){MessageBox(dlg,"Too many PWADs loaded!","Error!",MB_OK|MB_ICONEXCLAMATION);break;}
-					ofn.lpstrFilter="ZDoom Addon Files (*.wad,*.deh,*.bex,*.zip)\0*.wad;*.deh;*.bex;*.zip\0All Files (*.*)\0*.*\0";
+					ofn.lpstrFilter="ZDoom Addon Files (*.wad,*.deh,*.bex,*.zip,*.pk3)\0*.wad;*.deh;*.bex;*.zip;*.pk3\0All Files (*.*)\0*.*\0";
 					ofn.Flags=OFN_FILEMUSTEXIST|OFN_EXPLORER|OFN_ALLOWMULTISELECT;
 					ofn.lpstrTitle="Load an External File";
 					ofn.lpstrDefExt="wad";
@@ -247,7 +264,7 @@ LRESULT CALLBACK MainProc(HWND dlg,UINT msg,WPARAM wp,LPARAM lp){
 						free(tmp2);
 					}else{Dlg_AddPWAD(dlg,ofn.lpstrFile);}
 					free(ofn.lpstrFile);
-				break;
+					break;
 				case BTN_REM: // Delete button
 					if((i=SendMessage(GetDlgItem(dlg,LST_PWAD),LB_GETCURSEL,0,0))!=LB_ERR){
 						free(pwad[i]);
@@ -255,7 +272,7 @@ LRESULT CALLBACK MainProc(HWND dlg,UINT msg,WPARAM wp,LPARAM lp){
 						SendMessage(GetDlgItem(dlg,LST_PWAD),LB_SETCURSEL,i,0);
 						for(i;pwad[i]&&i<MAX_PWAD;i++){pwad[i]=pwad[i+1];}
 					}
-				break;
+					break;
 				case BTN_UP: // Move up
 					if((i=SendMessage(GetDlgItem(dlg,LST_PWAD),LB_GETCURSEL,0,0))!=LB_ERR&&i!=0){
 						// Move the entry in the window
@@ -265,7 +282,7 @@ LRESULT CALLBACK MainProc(HWND dlg,UINT msg,WPARAM wp,LPARAM lp){
 						// Move the item
 						tmp=pwad[i-1];pwad[i-1]=pwad[i];pwad[i]=tmp;
 					}
-				break;
+					break;
 				case BTN_DWN: // Move down
 					i=SendMessage(GetDlgItem(dlg,LST_PWAD),LB_GETCURSEL,0,0);
 					if((i=SendMessage(GetDlgItem(dlg,LST_PWAD),LB_GETCURSEL,0,0))!=LB_ERR&&i!=SendMessage(GetDlgItem(dlg,LST_PWAD),LB_GETCOUNT,0,0)-1){
@@ -276,7 +293,7 @@ LRESULT CALLBACK MainProc(HWND dlg,UINT msg,WPARAM wp,LPARAM lp){
 						// Move the item
 						tmp=pwad[i+1];pwad[i+1]=pwad[i];pwad[i]=tmp;
 					}
-				break;
+					break;
 				// Menu Selections
 				case MNU_OPTIONS:
 					DialogBox(GetModuleHandle(NULL),MAKEINTRESOURCE(DLG_OPTIONS),dlg,ConfigProc);
@@ -290,9 +307,13 @@ LRESULT CALLBACK MainProc(HWND dlg,UINT msg,WPARAM wp,LPARAM lp){
 					SendMessage(GetDlgItem(dlg,LST_WARP),CB_RESETCONTENT,0,0);
 					if(SendMessage(GetDlgItem(dlg,LST_IWAD),LB_GETCURSEL,0,0)!=LB_ERR){Dlg_PopulateWarp(dlg,iwad[Cfg_GetSel(0,iwad)]->path);}
 				break;
-				case MNU_ABOUT:DialogBox(GetModuleHandle(NULL),MAKEINTRESOURCE(DLG_ABOUT),dlg,AboutProc);break;
+				case MNU_ABOUT:
+					DialogBox(GetModuleHandle(NULL),MAKEINTRESOURCE(DLG_ABOUT),dlg,AboutProc);
+					break;
 				// Ways to exit
-				case BTN_EXIT:SendMessage(dlg,WM_CLOSE,0,0);break;
+				case BTN_EXIT:
+					SendMessage(dlg,WM_CLOSE,0,0);
+					break;
 			}break;
 		}break;
 		case WM_DROPFILES: // Add files dropped onto the pwad box
@@ -312,7 +333,7 @@ LRESULT CALLBACK MainProc(HWND dlg,UINT msg,WPARAM wp,LPARAM lp){
 
 int WINAPI WinMain(HINSTANCE inst,HINSTANCE pinst,LPSTR cline,int cshow){
 	// Set up the INI string
-	memset((cfg.ini=malloc((strlen(_pgmptr)+8)*sizeof(char))),0,(strlen(_pgmptr)+8)*sizeof(char));
+	cfg.ini = calloc( strlen(_pgmptr)+8 , sizeof(char) );
 	strcpy(cfg.ini,_pgmptr);
 	strrchr(cfg.ini,'\\')[1]='\0';
 	strcat(cfg.ini,"zdl.ini");

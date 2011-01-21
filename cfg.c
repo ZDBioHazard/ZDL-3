@@ -107,6 +107,8 @@ void Cfg_LoadConfig(){
 	ReadINI("zdl.general","alwaysadd",cfg.always,sizeof(cfg.always),cfg.ini);
 	ReadINI("zdl.general","zdllaunch",tmp,sizeof(tmp),cfg.ini);
 	if(tmp[0]=='1'){cfg.launch=1;}else{cfg.launch=0;}
+	ReadINI("zdl.general","autoclose",tmp,sizeof(tmp),cfg.ini);
+	if(tmp[0]=='1'){cfg.autoclose=1;}else{cfg.autoclose=0;}
 	// Load ports
 	for(i=0;i<MAX_ITEM;i++){
 		port[i] = malloc(sizeof(ITEM));
@@ -205,6 +207,7 @@ int Cfg_ReadSave(HWND dlg,char *file){
 		SendMessage(dlg,WM_COMMAND,MAKELONG(BTN_PANEL,BN_CLICKED),0);
 	}
 	// PWAD list
+	q=0;
 	for(i=0;i<MAX_PWAD;i++){
 		_snprintf(tmp2,MAX_PATH,"file%d",q);
 		if(ReadINI("zdl.save",tmp2,tmp,MAX_PATH,file)>0){
@@ -229,10 +232,12 @@ void Cfg_WriteSave(HWND dlg,FILE *fptr){
 	fprintf(fptr,"[zdl.save]\n");
 // Standard stuff
 	if(SendMessage(GetDlgItem(dlg,LST_PORT),CB_GETCURSEL,0,0)!=LB_ERR){fprintf(fptr,"port=%s\n",port[Cfg_GetSel(SendMessage(GetDlgItem(dlg,LST_PORT),CB_GETCURSEL,0,0),port)]->name);}
-	if(SendMessage(GetDlgItem(dlg,LST_IWAD),LB_GETCURSEL,0,0)!=LB_ERR){fprintf(fptr,"iwad=%s\n",iwad[Cfg_GetSel(SendMessage(GetDlgItem(dlg,LST_IWAD),LB_GETCURSEL,0,0),iwad)]->name);}
+	if(SendMessage(GetDlgItem(dlg,LST_IWAD),LB_GETCURSEL,0,0)!=LB_ERR){
+		fprintf(fptr,"iwad=%s\n",iwad[Cfg_GetSel(SendMessage(GetDlgItem(dlg,LST_IWAD),LB_GETCURSEL,0,0),iwad)]->name);
+	}
 	if(!cfg.dlgmode){fputs("dlgmode=open\n",fptr);}
 	SendMessage(GetDlgItem(dlg,LST_WARP),WM_GETTEXT,MAX_PATH,(LPARAM)tmp);
-	if(tmp[0]&&stricmp(tmp,"NONE")){fprintf(fptr,"warp=%s\nskill=%d\n",tmp,SendMessage(GetDlgItem(dlg,LST_SKILL),CB_GETCURSEL,0,0));}
+	if(tmp[0]&&stricmp(tmp,"")){fprintf(fptr,"warp=%s\nskill=%d\n",tmp,SendMessage(GetDlgItem(dlg,LST_SKILL),CB_GETCURSEL,0,0));}
 	if((i=SendMessage(GetDlgItem(dlg,LST_GAME),CB_GETCURSEL,0,0))){fprintf(fptr,"gametype=%d\n",i);}
 	if((i=SendMessage(GetDlgItem(dlg,LST_PLAYERS),CB_GETCURSEL,0,0))){fprintf(fptr,"players=%d\n",i);}
 	for(i=0;i<5;i++){ // Grab text from the boxes

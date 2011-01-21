@@ -36,9 +36,10 @@ typedef struct{ // Options
 	char dlgmode;
 	char always[128];
 	char launch;
+	char autoclose;
 	// Internal
 	char *ini;
-	char assoc[4];
+	char assoc[5];
 }CFG; extern CFG cfg;
 typedef struct{ // IWAD defs
 	char avail;
@@ -125,6 +126,7 @@ typedef struct{
 #define DLG_OPTIONS 101
 	//#define EDT_EXTRA // used in DLG_MAIN
 	#define CHK_LAUNCH 1020
+	#define CHK_AUTOCLOSE 1032
 	//#define BTN_ZDL // used in DLG_MAIN
 	//#define LST_PORT // used in DLG_MAIN
 	//#define BTN_UP // used in DLG_MAIN
@@ -148,6 +150,8 @@ typedef struct{
 #define DLG_ASSOC 103
 	#define CHK_ZDL 1029
 	#define CHK_WAD 1030
+	#define CHK_PK3 1032
+	#define CHK_ZIP 1033
 	#define CHK_DEH 1031
 	//#define BTN_OK // used in DLG_OPTIONS
 // About Dialog
